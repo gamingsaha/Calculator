@@ -1,59 +1,512 @@
 <!doctype html>
-<html lang="en">
+<html lang="hi">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#075bc5">
-<title>Gram Price Calculator</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0a0a1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>₹ Gram Price Calculator</title>
 <style>
-:root{font-family:Arial,sans-serif;color:#172033;background:#eef5fc}*{box-sizing:border-box}
-body{margin:0}header{background:#075bc5;color:white;padding:20px 17px;font-size:22px;font-weight:700}
-main{max-width:540px;margin:auto;padding:15px}.card{background:white;border-radius:17px;padding:17px;margin-bottom:14px;box-shadow:0 4px 16px #1232}
-label{display:block;font-weight:700;margin:5px 0 8px}input{width:100%;font-size:22px;padding:12px;border:1px solid #b9c5d3;border-radius:10px;margin-bottom:14px}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}.tab,button{border:0;border-radius:10px;padding:13px 8px;font-size:15px;font-weight:700;cursor:pointer}
-.tab{background:#e1efff;color:#064ca7}.tab.active{background:#075bc5;color:white}
-.shortcuts{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:13px}.short{background:#e1efff;color:#064ca7}
-.primary{width:100%;background:#075bc5;color:white;font-size:18px;padding:15px;margin-bottom:14px}
-.result{background:#dcfce5;text-align:center;border-radius:15px;padding:19px;margin-bottom:14px}.result small{font-size:15px}.amount{font-size:36px;font-weight:800;color:#08642a;margin:8px 0}
-.row{display:flex;gap:10px}.row button{flex:1}.secondary{background:#e1efff;color:#064ca7}.green{background:#d7f9df;color:#075a24}
-h3{margin:0 0 12px}.history-item{border-bottom:1px solid #e5eaf0;padding:11px 0;display:flex;justify-content:space-between;gap:10px}.history-item strong{color:#08732b;white-space:nowrap}
-.muted{color:#667085;font-size:13px}.clear{background:#fee2e2;color:#991b1b;margin-top:10px}.hidden{display:none}
-</style></head>
+:root {
+  --bg: #0a0a1a;
+  --card: #12122a;
+  --neon-cyan: #00f5ff;
+  --neon-pink: #ff00aa;
+  --neon-green: #39ff14;
+  --neon-purple: #bf00ff;
+  --text: #e8f0ff;
+  --muted: #8b9bb4;
+  --input-bg: #1a1a35;
+  --border: #2a2a50;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: radial-gradient(ellipse at top, #151530 0%, #0a0a1a 60%);
+  padding-bottom: 24px;
+}
+
+header {
+  background: linear-gradient(135deg, #0d0d28, #1a0a2e);
+  color: var(--neon-cyan);
+  padding: 18px 16px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 12px var(--neon-cyan), 0 0 24px rgba(0,245,255,0.4);
+  border-bottom: 1px solid rgba(0,245,255,0.25);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+main {
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 14px 12px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  box-shadow: 0 0 20px rgba(0,245,255,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0 0 8px;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px rgba(0,245,255,0.3);
+}
+
+input {
+  width: 100%;
+  font-size: 1.35rem;
+  padding: 14px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 14px;
+  background: var(--input-bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 12px rgba(0,245,255,0.35);
+}
+
+input::placeholder { color: #556; }
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tab, button {
+  border: 0;
+  border-radius: 12px;
+  padding: 13px 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab {
+  background: var(--input-bg);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.tab.active {
+  background: linear-gradient(135deg, #00c4cc, #007a9e);
+  color: #fff;
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 16px rgba(0,245,255,0.45);
+  text-shadow: 0 0 6px rgba(255,255,255,0.5);
+}
+
+.shortcuts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.short {
+  background: var(--input-bg);
+  color: var(--neon-cyan);
+  border: 1px solid rgba(0,245,255,0.25);
+  font-size: 0.85rem;
+  padding: 11px 4px;
+}
+
+.short:active, .short:hover {
+  background: rgba(0,245,255,0.15);
+  box-shadow: 0 0 10px rgba(0,245,255,0.3);
+}
+
+.primary {
+  width: 100%;
+  background: linear-gradient(135deg, #00e5ff, #0077ff);
+  color: #0a0a1a;
+  font-size: 1.15rem;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 0 22px rgba(0,245,255,0.5);
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.primary:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 12px rgba(0,245,255,0.6);
+}
+
+.result {
+  background: linear-gradient(145deg, #0d1f14, #0a2818);
+  text-align: center;
+  border-radius: 16px;
+  padding: 20px 16px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(57,255,20,0.35);
+  box-shadow: 0 0 24px rgba(57,255,20,0.15), inset 0 0 30px rgba(57,255,20,0.05);
+}
+
+.result small {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.amount {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--neon-green);
+  margin: 8px 0;
+  text-shadow: 0 0 14px rgba(57,255,20,0.7), 0 0 28px rgba(57,255,20,0.3);
+  word-break: break-all;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.row button { flex: 1; }
+
+.secondary {
+  background: var(--input-bg);
+  color: var(--neon-cyan);
+  border: 1px solid rgba(0,245,255,0.3);
+}
+
+.secondary:active {
+  box-shadow: 0 0 12px rgba(0,245,255,0.3);
+}
+
+.green {
+  background: linear-gradient(135deg, #1a3a22, #0d2818);
+  color: var(--neon-green);
+  border: 1px solid rgba(57,255,20,0.4);
+}
+
+.green:active {
+  box-shadow: 0 0 12px rgba(57,255,20,0.35);
+}
+
+h3 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px rgba(255,0,170,0.4);
+}
+
+.history-item {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.history-item:last-child { border-bottom: none; }
+
+.history-item strong {
+  color: var(--neon-green);
+  white-space: nowrap;
+  text-shadow: 0 0 8px rgba(57,255,20,0.4);
+  font-size: 0.95rem;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.clear {
+  background: linear-gradient(135deg, #2a1218, #1a0a10);
+  color: #ff6b8a;
+  border: 1px solid rgba(255,80,120,0.35);
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+}
+
+.clear:active {
+  box-shadow: 0 0 12px rgba(255,80,120,0.3);
+}
+
+.hidden { display: none !important; }
+
+.formula {
+  text-align: center;
+  margin-top: 8px;
+  padding: 10px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  opacity: 0.85;
+}
+
+.live-hint {
+  font-size: 0.75rem;
+  color: var(--neon-purple);
+  text-align: center;
+  margin: -6px 0 10px;
+  opacity: 0.8;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+@supports (padding: max(0px)) {
+  body { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+  header { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+}
+
+@media (max-width: 360px) {
+  .amount { font-size: 1.75rem; }
+  .shortcuts { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .short { font-size: 0.78rem; padding: 10px 2px; }
+}
+</style>
+</head>
 <body>
 <header>₹ Gram Price Calculator</header>
 <main>
-<section class="card">
- <div class="tabs"><button class="tab active" id="tabGram">Gram → Rupees</button><button class="tab" id="tabMoney">Rupees → Gram</button></div>
- <label for="kgPrice">1 KG ka price (₹)</label><input id="kgPrice" type="number" min="0" step="0.01" value="675" inputmode="decimal">
- <div id="gramPanel">
-  <label for="grams">Kitne gram chahiye?</label><input id="grams" type="number" min="0" step="any" value="150" inputmode="decimal">
-  <div class="shortcuts"><button class="short" data-g="50">50 g</button><button class="short" data-g="100">100 g</button><button class="short" data-g="200">200 g</button><button class="short" data-g="250">250 g</button><button class="short" data-g="500">500 g</button><button class="short" data-g="750">750 g</button><button class="short" data-g="1000">1 kg</button><button class="short" id="other">Other</button></div>
- </div>
- <div id="moneyPanel" class="hidden"><label for="rupees">Kitne rupees ka chahiye? (₹)</label><input id="rupees" type="number" min="0" step="0.01" value="100" inputmode="decimal"></div>
-</section>
-<button class="primary" id="calc">Calculate</button>
-<section class="result"><small id="resultLabel">Total price</small><div class="amount" id="result">₹101.25</div><small id="details">150 gram ka price</small></section>
-<div class="row"><button class="secondary" id="reset">Reset</button><button class="green" id="copy">Copy Result</button></div>
-<section class="card" style="margin-top:16px"><h3>Calculation History</h3><div id="history"></div><button class="clear" id="clear">Clear History</button></section>
-<p class="muted">Formula: (1 kg ka price × gram) ÷ 1000</p>
+  <section class="card">
+    <div class="tabs">
+      <button class="tab active" id="tabGram">Gram → ₹</button>
+      <button class="tab" id="tabMoney">₹ → Gram</button>
+    </div>
+
+    <label for="kgPrice">1 KG ka price (₹)</label>
+    <input id="kgPrice" type="number" min="0" step="0.01" value="" inputmode="decimal" placeholder="0">
+
+    <div id="gramPanel">
+      <label for="grams">Kitne gram chahiye?</label>
+      <input id="grams" type="number" min="0" step="any" value="" inputmode="decimal" placeholder="0">
+      <div class="shortcuts">
+        <button class="short" data-g="50">50 g</button>
+        <button class="short" data-g="100">100 g</button>
+        <button class="short" data-g="200">200 g</button>
+        <button class="short" data-g="250">250 g</button>
+        <button class="short" data-g="500">500 g</button>
+        <button class="short" data-g="750">750 g</button>
+        <button class="short" data-g="1000">1 kg</button>
+        <button class="short" id="other">Other</button>
+      </div>
+    </div>
+
+    <div id="moneyPanel" class="hidden">
+      <label for="rupees">Kitne rupees ka chahiye? (₹)</label>
+      <input id="rupees" type="number" min="0" step="0.01" value="" inputmode="decimal" placeholder="0">
+      <div class="shortcuts" style="margin-top:4px">
+        <button class="short" data-r="50">₹50</button>
+        <button class="short" data-r="100">₹100</button>
+        <button class="short" data-r="200">₹200</button>
+        <button class="short" data-r="500">₹500</button>
+      </div>
+    </div>
+  </section>
+
+  <p class="live-hint" id="liveHint">Type karte hi result update hota hai</p>
+
+  <button class="primary" id="calc">Calculate</button>
+
+  <section class="result">
+    <small id="resultLabel">Total price</small>
+    <div class="amount" id="result">₹0.00</div>
+    <small id="details">Values daal kar result dekho</small>
+  </section>
+
+  <div class="row">
+    <button class="secondary" id="reset">Reset</button>
+    <button class="green" id="copy">Copy Result</button>
+  </div>
+
+  <section class="card" style="margin-top:16px">
+    <h3>Calculation History</h3>
+    <div id="history"></div>
+    <button class="clear" id="clear">Clear History</button>
+  </section>
+
+  <p class="formula">Formula: (1 kg price × gram) ÷ 1000</p>
 </main>
+
 <script>
-const $=id=>document.getElementById(id);let mode='gram';
-let history=JSON.parse(localStorage.getItem('gramPriceHistoryV2')||'[]');
-const money=n=>'₹'+Number(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
-function setMode(m){mode=m;$('tabGram').classList.toggle('active',m==='gram');$('tabMoney').classList.toggle('active',m==='money');$('gramPanel').classList.toggle('hidden',m!=='gram');$('moneyPanel').classList.toggle('hidden',m!=='money');$('resultLabel').textContent=m==='gram'?'Total price':'Aapko kitna gram milega?';calculate(false)}
-function calculate(save=true){
- const price=parseFloat($('kgPrice').value);if(!Number.isFinite(price)||price<=0){$('result').textContent='Valid price daalein';return}
- let input,total,label,detail;
- if(mode==='gram'){input=parseFloat($('grams').value);if(!Number.isFinite(input)||input<0){$('result').textContent='Valid gram daalein';return}total=price*input/1000;label=money(total);detail=`${input} gram ka price`; }
- else{input=parseFloat($('rupees').value);if(!Number.isFinite(input)||input<0){$('result').textContent='Valid rupees daalein';return}total=input*1000/price;label=Number(total).toLocaleString('en-IN',{maximumFractionDigits:2})+' gram';detail=`${money(input)} mein itna milega`; }
- $('result').textContent=label;$('details').textContent=detail;
- if(save){history.unshift({mode,price,input,total,when:new Date().toLocaleString()});history=history.slice(0,50);localStorage.setItem('gramPriceHistoryV2',JSON.stringify(history));renderHistory()}
+const $ = id => document.getElementById(id);
+let mode = 'gram';
+let history = JSON.parse(localStorage.getItem('gramPriceHistoryV3') || '[]');
+
+const money = n => '₹' + Number(n).toLocaleString('en-IN', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
+
+function setMode(m) {
+  mode = m;
+  $('tabGram').classList.toggle('active', m === 'gram');
+  $('tabMoney').classList.toggle('active', m === 'money');
+  $('gramPanel').classList.toggle('hidden', m !== 'gram');
+  $('moneyPanel').classList.toggle('hidden', m !== 'money');
+  $('resultLabel').textContent = m === 'gram' ? 'Total price' : 'Aapko kitna gram milega?';
+  calculate(false);
 }
-function renderHistory(){$('history').innerHTML=history.length?history.map(x=>`<div class="history-item"><div><div class="muted">${x.when}</div>1 kg: ${money(x.price)}<br>${x.mode==='gram'?x.input+' g':'₹'+x.input+' ka gram'}</div><strong>${x.mode==='gram'?money(x.total):Number(x.total).toLocaleString('en-IN',{maximumFractionDigits:2})+' g'}</strong></div>`).join(''):'<p class="muted">Abhi koi history nahi hai.</p>'}
-$('tabGram').onclick=()=>setMode('gram');$('tabMoney').onclick=()=>setMode('money');$('calc').onclick=()=>calculate(true);
-document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{$('grams').value=b.dataset.g;setMode('gram');calculate(false)});
-$('other').onclick=()=>$('grams').focus();
-$('reset').onclick=()=>{$('kgPrice').value='';$('grams').value='';$('rupees').value='';$('result').textContent='₹0.00';$('details').textContent='Values daal kar Calculate dabayein'};
-$('copy').onclick=async()=>{try{await navigator.clipboard.writeText($('result').textContent);$('copy').textContent='Copied!';setTimeout(()=>$('copy').textContent='Copy Result',1200)}catch(e){alert('Result: '+$('result').textContent)}};
-$('clear').onclick=()=>{history=[];localStorage.removeItem('gramPriceHistoryV2');renderHistory()};renderHistory();calculate(false);
-</script></body></html>
+
+function calculate(save = true) {
+  const price = parseFloat($('kgPrice').value);
+  if (!Number.isFinite(price) || price <= 0) {
+    $('result').textContent = '₹0.00';
+    $('details').textContent = '1 KG ka price daalein';
+    return;
+  }
+
+  let input, total, label, detail;
+
+  if (mode === 'gram') {
+    input = parseFloat($('grams').value);
+    if (!Number.isFinite(input) || input < 0) {
+      $('result').textContent = '₹0.00';
+      $('details').textContent = 'Valid gram daalein';
+      return;
+    }
+    total = price * input / 1000;
+    label = money(total);
+    detail = input === 0 ? '0 gram ka price' : `${input} gram ka price`;
+  } else {
+    input = parseFloat($('rupees').value);
+    if (!Number.isFinite(input) || input < 0) {
+      $('result').textContent = '0 gram';
+      $('details').textContent = 'Valid rupees daalein';
+      return;
+    }
+    total = input * 1000 / price;
+    label = Number(total).toLocaleString('en-IN', { maximumFractionDigits: 2 }) + ' gram';
+    detail = input === 0 ? '₹0 mein itna milega' : `${money(input)} mein itna milega`;
+  }
+
+  $('result').textContent = label;
+  $('details').textContent = detail;
+
+  if (save && input > 0) {
+    history.unshift({
+      mode,
+      price,
+      input,
+      total,
+      when: new Date().toLocaleString('en-IN')
+    });
+    history = history.slice(0, 30);
+    localStorage.setItem('gramPriceHistoryV3', JSON.stringify(history));
+    renderHistory();
+  }
+}
+
+function renderHistory() {
+  if (!history.length) {
+    $('history').innerHTML = '<p class="muted">Abhi koi history nahi hai.</p>';
+    return;
+  }
+  $('history').innerHTML = history.map(x => `
+    <div class="history-item">
+      <div>
+        <div class="muted">${x.when}</div>
+        1 kg: ${money(x.price)}<br>
+        ${x.mode === 'gram' ? x.input + ' g' : '₹' + x.input + ' ka gram'}
+      </div>
+      <strong>${x.mode === 'gram' ? money(x.total) : Number(x.total).toLocaleString('en-IN', { maximumFractionDigits: 2 }) + ' g'}</strong>
+    </div>
+  `).join('');
+}
+
+// Events
+$('tabGram').onclick = () => setMode('gram');
+$('tabMoney').onclick = () => setMode('money');
+$('calc').onclick = () => calculate(true);
+
+// Live calculation while typing
+['kgPrice', 'grams', 'rupees'].forEach(id => {
+  $(id).addEventListener('input', () => calculate(false));
+});
+
+// Gram shortcuts
+document.querySelectorAll('[data-g]').forEach(b => {
+  b.onclick = () => {
+    $('grams').value = b.dataset.g;
+    setMode('gram');
+    calculate(false);
+  };
+});
+
+// Rupee shortcuts
+document.querySelectorAll('[data-r]').forEach(b => {
+  b.onclick = () => {
+    $('rupees').value = b.dataset.r;
+    setMode('money');
+    calculate(false);
+  };
+});
+
+$('other').onclick = () => {
+  $('grams').value = '';
+  $('grams').focus();
+};
+
+$('reset').onclick = () => {
+  $('kgPrice').value = '';
+  $('grams').value = '';
+  $('rupees').value = '';
+  $('result').textContent = '₹0.00';
+  $('details').textContent = 'Values daal kar result dekho';
+  $('kgPrice').focus();
+};
+
+$('copy').onclick = async () => {
+  try {
+    await navigator.clipboard.writeText($('result').textContent);
+    $('copy').textContent = 'Copied!';
+    setTimeout(() => $('copy').textContent = 'Copy Result', 1200);
+  } catch (e) {
+    alert('Result: ' + $('result').textContent);
+  }
+};
+
+$('clear').onclick = () => {
+  if (history.length === 0) return;
+  history = [];
+  localStorage.removeItem('gramPriceHistoryV3');
+  renderHistory();
+};
+
+// Init
+renderHistory();
+calculate(false);
+</script>
+</body>
+</html>
